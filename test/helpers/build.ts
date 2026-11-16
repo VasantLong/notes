@@ -8,6 +8,20 @@ import { fileURLToPath } from "node:url"
 const run = promisify(execFile)
 
 export const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..")
+/** 1×1 透明 PNG：fixture 花园库里的附件，字节稳定、无需外部资源。 */
+export const pngFixture = Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
+  "base64",
+)
+
+/** fixture 笔记：前置字段块 + 正文，正文缺省为一句合法内容。 */
+export const entry = (frontmatter: string, body = "正文。") => `---
+${frontmatter}
+---
+
+${body}
+`
+
 /** 构建产物落在仓库外：既不留垃圾，也不进 pi-lens 的扫描面。 */
 export const tmpDir = path.join(os.tmpdir(), "notes-garden-tests")
 

@@ -3,23 +3,18 @@ import assert from "node:assert/strict"
 import fs from "node:fs/promises"
 import path from "node:path"
 
-import { buildSite, listArtifacts, readTextArtifacts, tmpDir } from "./helpers/build"
+import {
+  buildSite,
+  entry,
+  listArtifacts,
+  pngFixture,
+  readTextArtifacts,
+  tmpDir,
+} from "./helpers/build"
 
 const fixtureRoot = path.join(tmpDir, "publish-gate")
 const vault = path.join(fixtureRoot, "content")
 const outDir = path.join(fixtureRoot, "public")
-
-const PNG = Buffer.from(
-  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==",
-  "base64",
-)
-
-const entry = (frontmatter: string, body = "正文。") => `---
-${frontmatter}
----
-
-${body}
-`
 
 const writeVault = async () => {
   await fs.rm(fixtureRoot, { recursive: true, force: true })
@@ -78,8 +73,8 @@ description: 在 inbox 里。
 date: 2026-11-16`,
       "inbox 永不进构建。",
     ),
-    "attachments/图.png": PNG,
-    "attachments/未引用.png": PNG,
+    "attachments/图.png": pngFixture,
+    "attachments/未引用.png": pngFixture,
   }
   for (const [rel, body] of Object.entries(files)) {
     const abs = path.join(vault, rel)
