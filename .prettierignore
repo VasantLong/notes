@@ -1,3 +1,5 @@
 public
 node_modules
 .quartz-cache
+# 自托管的压缩第三方库：原样入库，不要重排
+quartz/static/vendor

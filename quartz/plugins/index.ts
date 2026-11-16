@@ -1,5 +1,6 @@
 import { StaticResources } from "../util/resources"
 import { BuildCtx } from "../util/ctx"
+import { localizeThirdPartyResources } from "../util/self-host"
 
 export function getStaticResourcesFromPlugins(ctx: BuildCtx) {
   const staticResources: StaticResources = {
@@ -23,6 +24,9 @@ export function getStaticResourcesFromPlugins(ctx: BuildCtx) {
       ;(staticResources.assets ??= []).push(...res.assets)
     }
   }
+
+  // 插件硬编码的 CDN 地址一律改写到 quartz/static/vendor/ 的自托管副本
+  localizeThirdPartyResources(staticResources)
 
   // if serving locally, listen for rebuilds and reload the page
   if (ctx.argv.serve) {

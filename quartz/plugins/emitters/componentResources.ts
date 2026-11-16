@@ -16,6 +16,7 @@ import { BuildCtx } from "../../util/ctx"
 import { QuartzComponent } from "../../components/types"
 import { normalizeResource } from "../../util/resources"
 import { componentRegistry } from "../../components/registry"
+import { localizeUrls } from "../../util/self-host"
 import {
   googleFontHref,
   googleFontSubsetHref,
@@ -64,8 +65,10 @@ function getComponentResources(ctx: BuildCtx): ComponentResources {
   for (const component of allComponents) {
     const { css, beforeDOMLoaded, afterDOMLoaded } = component
     for (const c of normalizeResource(css)) componentResources.css.add(c)
-    for (const b of normalizeResource(beforeDOMLoaded)) componentResources.beforeDOMLoaded.add(b)
-    for (const a of normalizeResource(afterDOMLoaded)) componentResources.afterDOMLoaded.add(a)
+    for (const b of normalizeResource(beforeDOMLoaded))
+      componentResources.beforeDOMLoaded.add(localizeUrls(b))
+    for (const a of normalizeResource(afterDOMLoaded))
+      componentResources.afterDOMLoaded.add(localizeUrls(a))
   }
 
   return {
