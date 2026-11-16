@@ -33,6 +33,7 @@ import { ChangeRecord, clearChangeRecord } from "./util/incremental"
 import { validateEntry, type EntryViolation } from "./util/entry-contract"
 import { diffContentFiles, pollingEnabled } from "./util/contentWatcher"
 import { markUnpublishedLinks } from "./util/unpublished-links"
+import { guardAliases } from "./util/alias-redirects"
 
 /**
  * 条目契约闸门（推送期字段校验的构建内一半）：任何一条笔记缺字段或字段不合法，
@@ -194,6 +195,8 @@ async function buildQuartz(argv: Argv, mut: Mutex, clientRefresh: () => void) {
   const filteredContent = filterContent(ctx, parsedFiles)
   // 过滤器跑完后才知道哪些页面"不存在"：此时再标出指向它们的链接（未发布 ≠ 死链，但也不是活的）。
   markUnpublishedLinks(filteredContent)
+  // 别名跳转页直接写产物目录，跳转页渲染之前先把会顶掉站点页面 / 越界的别名拦下来
+  guardAliases(filteredContent)
 
   await emitContent(ctx, filteredContent)
   console.log(
@@ -460,6 +463,7 @@ async function rebuild(changes: ChangeEvent[], clientRefresh: () => void, buildD
     reportSlugCollisions(markdownContent)
     let processedFiles = filterContent(ctx, markdownContent)
     markUnpublishedLinks(processedFiles)
+    guardAliases(processedFiles)
 
     let emittedFiles = 0
 
