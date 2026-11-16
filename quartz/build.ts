@@ -30,7 +30,36 @@ import { printDiagnosticsSummary, warn } from "./util/diagnostics"
 import { collectPermalinks } from "./util/permalinks"
 import { readFrontmatterData } from "./plugins/builtins/frontmatter"
 import { ChangeRecord, clearChangeRecord } from "./util/incremental"
+import { validateEntry, type EntryViolation } from "./util/entry-contract"
 import { diffContentFiles, pollingEnabled } from "./util/contentWatcher"
+
+/**
+ * 条目契约闸门（推送期字段校验的构建内一半）：任何一条笔记缺字段或字段不合法，
+ * 都在产出第一份文件之前中止构建。Quartz 对缺字段一律静默兜底（标题回落文件名、
+ * 无描述就不生成 meta），所以这道闸门必须自己 fail loud。
+ */
+function assertEntryContract(ctx: BuildCtx, markdownPaths: string[]): void {
+  const frontmatterConfig = ctx.cfg.configuration.frontmatter
+  const options = typeof frontmatterConfig === "object" ? frontmatterConfig : {}
+  const violations: EntryViolation[] = []
+  for (const relativePath of markdownPaths) {
+    let frontmatter: Record<string, unknown>
+    try {
+      const source = fs.readFileSync(path.join(ctx.argv.directory, relativePath))
+      frontmatter = readFrontmatterData(source, options)
+    } catch {
+      continue // 解析不了的 YAML 由常规解析阶段报错
+    }
+    violations.push(...validateEntry(frontmatter, relativePath.replace(/\.md$/i, "")))
+  }
+
+  if (violations.length === 0) return
+
+  for (const violation of violations) {
+    console.error(`✗ ${violation.slug}.md — ${violation.field}: ${violation.message}`)
+  }
+  throw new Error(`条目契约校验失败：${violations.length} 处违规，构建在产出任何页面之前中止`)
+}
 
 /**
  * Every page's address: permalinks (frontmatter `permalink`, read up front so links can resolve
@@ -158,6 +187,7 @@ async function buildQuartz(argv: Argv, mut: Mutex, clientRefresh: () => void) {
   ctx.allFiles = allFiles
   updateSlugs(ctx, allFiles)
 
+  assertEntryContract(ctx, markdownPaths)
   const parsedFiles = await parseMarkdown(ctx, filePaths)
   reportSlugCollisions(parsedFiles)
   const filteredContent = filterContent(ctx, parsedFiles)
@@ -359,6 +389,14 @@ async function rebuild(changes: ChangeEvent[], clientRefresh: () => void, buildD
       const fullPath = joinSegments(argv.directory, toPosixPath(fp)) as FilePath
       pathsToParse.push(fullPath)
     }
+
+    // 增量构建走同一条闸门：--serve 期间新加的坏条目一样要挡住。
+    assertEntryContract(
+      ctx,
+      Object.entries(changesSinceLastBuild)
+        .filter(([fp, type]) => type !== "delete" && path.extname(fp) === ".md")
+        .map(([fp]) => fp),
+    )
 
     const parsed = await parseMarkdown(ctx, pathsToParse)
     for (const content of parsed) {
