@@ -11,6 +11,7 @@ import {
   readTextArtifacts,
   tmpDir,
 } from "./helpers/build"
+import { anchors, anchorFor, resolveHref, withoutAnchor } from "./helpers/html"
 
 const fixtureRoot = path.join(tmpDir, "links-and-embeds")
 const vault = path.join(fixtureRoot, "content")
@@ -111,42 +112,6 @@ date: 2026-11-16`,
   }
 }
 
-/** 产物里一个 <a> 的可观察属性：显示文本、href、class 列表。 */
-interface Anchor {
-  text: string
-  href: string
-  classes: string[]
-}
-
-function anchors(html: string): Anchor[] {
-  return [...html.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/g)].map((m) => {
-    const attrs = m[1]
-    return {
-      href: /\bhref="([^"]*)"/.exec(attrs)?.[1] ?? "",
-      classes: (/\bclass="([^"]*)"/.exec(attrs)?.[1] ?? "").split(/\s+/).filter(Boolean),
-      text: m[2]
-        .replace(/<[^>]*>/g, "")
-        .replace(/\s+/g, " ")
-        .trim(),
-    }
-  })
-}
-
-const withoutAnchor = (href: string) => decodeURI(href.split("#")[0])
-
-/** href 从产物页面出发解析到实际文件；prettyLinks 去掉 .html，两种形态都算命中。 */
-function resolveHref(files: string[], fromPage: string, href: string): string | undefined {
-  const clean = withoutAnchor(href)
-  if (!clean || clean.startsWith("#")) return undefined
-  const target = path.posix.normalize(
-    path.posix.join(path.posix.dirname(fromPage), decodeURI(clean)),
-  )
-  const candidates = [target, `${target}.html`, path.posix.join(target, "index.html")]
-  return candidates.find((candidate) => files.includes(candidate))
-}
-
-const anchorFor = (list: Anchor[], text: string) => list.find((a) => a.text === text)
-
 describe("链接与嵌入：双链", () => {
   let files: string[]
   let artifacts: Map<string, string>
@@ -183,7 +148,7 @@ describe("链接与嵌入：双链", () => {
 
   test("[[笔记#小节]] 跳到该小节，且目标页里锚点存在", () => {
     const list = anchors(artifacts.get("双链与别名.html")!)
-    const section = list.find((a) => a.href.includes("#甲节"))
+    const section = list.find((a) => decodeURI(a.href).includes("#甲节"))
     assert.ok(section, "小节链接没有带锚点")
     const target = resolveHref(files, "双链与别名.html", section!.href)
     assert.ok(target, `小节链接解析不到产物页面：${section!.href}`)

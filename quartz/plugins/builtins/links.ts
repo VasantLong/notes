@@ -51,6 +51,25 @@ const isAbsolute = isAbsoluteUrl as (url: string, options?: { httpOnly?: boolean
 // percent-encoding (`%zz`, `a%E2.md`), which names no file
 const isExternalUrl = (url: string) => isAbsolute(url, { httpOnly: false }) || !linkPathDecodes(url)
 
+/**
+ * Internal URLs in the emitted HTML are URI references, so they are percent-encoded (`中文 笔记` →
+ * `%E4%B8%AD%E6%96%87-%E7%AC%94%E8%AE%B0`) while the artifact keeps its readable name. Author-written
+ * links can arrive already escaped (`%20`, `%E4%B8%AD`), so the path is decoded in full first
+ * (`decodeURIComponent`, which also undoes reserved escapes like `%26`) and then passed through
+ * `encodeURI` — encoding an already-escaped path without decoding would escape its `%` signs
+ * (`%26` → `%2526`). Reserved characters `encodeURI` leaves alone (`&`, `=`, `/`, `#`) come back as
+ * themselves, which is a legal URI reference for those positions.
+ */
+const encodeInternalUrl = (url: string): RelativeURL => {
+  try {
+    // decode first so already-escaped input (`%20`, `%E4%B8%AD`) is encoded once, not twice
+    return encodeURI(decodeURIComponent(url)) as RelativeURL
+  } catch {
+    // a malformed escape decodes to nothing; encodeURI escapes the stray `%` as a literal
+    return encodeURI(url) as RelativeURL
+  }
+}
+
 const EXTERNAL_ICON_PATH =
   "M320 0H288V64h32 82.7L201.4 265.4 178.7 288 224 333.3l22.6-22.6L448 109.3V192v32h64V192 32 0H480 320zM32 32H0V64 480v32H32 456h32V480 352 320H424v32 96H64V96h96 32V32H160 32z"
 
@@ -89,12 +108,13 @@ export const Links: QuartzTransformerPlugin<LinksConfig> = (userOpts) => {
             const rebase = targets.size > 0 || pathSlug !== fileSlug
             const resolveLink = (raw: string): RelativeURL => {
               const rel = transformLink(pathSlug, raw, transformOptions)
-              if (!rebase) return rel
+              if (!rebase) return encodeInternalUrl(rel)
               const hash = rel.indexOf("#")
               const anchor = hash === -1 ? "" : rel.slice(hash)
               const target = canonicalSlug(rel, simplifySlug(pathSlug))
-              return (resolveRelative(fileSlug, targets.get(target) ?? target) +
-                anchor) as RelativeURL
+              return encodeInternalUrl(
+                resolveRelative(fileSlug, targets.get(target) ?? target) + anchor,
+              )
             }
 
             visit(tree, "element", (node: Element) => {
@@ -157,6 +177,8 @@ export const Links: QuartzTransformerPlugin<LinksConfig> = (userOpts) => {
                     classes.push("broken")
                     node.properties.className = classes
                   }
+                } else if (!isExternal) {
+                  node.properties.href = encodeInternalUrl(dest)
                 }
 
                 if (opts.prettyLinks && isInternal && node.children.length === 1) {
