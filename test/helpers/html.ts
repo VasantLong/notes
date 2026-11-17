@@ -7,6 +7,14 @@ import path from "path"
  * 判定一律"从产物页出发能否命中真实产物文件"，不断言 HTML 结构的字面形状。
  */
 
+/** 产物页的可见文本：去标签、解码空白，用来判断"这段文字在不在这页上"。 */
+export const plainText = (html: string) =>
+  html
+    .replace(/<[^>]*>/g, "")
+    .replace(/&[a-z]+;|&#\d+;/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+
 /** 产物里一个 <a> 的可观察属性：显示文本、href、class 列表。 */
 export interface Anchor {
   text: string
@@ -20,10 +28,7 @@ export function anchors(html: string): Anchor[] {
     return {
       href: /\bhref="([^"]*)"/.exec(attrs)?.[1] ?? "",
       classes: (/\bclass="([^"]*)"/.exec(attrs)?.[1] ?? "").split(/\s+/).filter(Boolean),
-      text: m[2]
-        .replace(/<[^>]*>/g, "")
-        .replace(/\s+/g, " ")
-        .trim(),
+      text: plainText(m[2]),
     }
   })
 }
