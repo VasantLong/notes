@@ -1,0 +1,92 @@
+# 花园站的发布流水线（票 10）：push 到 main 就上线，不需要任何手工命令。
+#
+# 也让手工触发（workflow_dispatch）跑 build：build 永远跑，deploy 只跟 push main 走，
+# 所以手工触发 = "只建不部署"，用来单独验证构建段（Pages 还没开通时尤其有用）。
+# 注意 GitHub 只允许对默认分支上的 workflow 发起 dispatch——合进 main 之前拉不动。
+#
+# 次序是契约：装依赖 → 装插件 → 字段校验 → 构建 → 上传产物 → 部署。
+# 字段校验在建之前，坏条目进不了产物，也就不会被部署。
+name: Deploy garden site
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一时间只跑一条部署流水线；排队而不取消，避免半截产物覆盖线上。
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # fetch-depth: 0 是硬要求：created-modified-date 的优先级是 frontmatter → git → 文件系统，
+      # 浅克隆会让 git 查不到历史，所有条目静默回落到 mtime（CI 里就是"全是今天"）。
+      - name: Check out (full history)
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .node-version
+
+      # 两级缓存，key 都取锁文件的哈希：锁文件一变就等于换了一把新钥匙。
+      # 插件目录是 `.quartz/plugins`（由 `quartz plugin install` 生成/再生）。
+      # 插件 key 连 quartz.lock.json 一起算：将来接 git/local 插件时，锁文件变了
+      # 而 key 不变，就会把旧版本的插件目录恢复回来（gitLoader 按包名直接认领）。
+      - name: Restore npm cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.npm
+          key: npm-${{ hashFiles('package-lock.json', '.node-version') }}
+          restore-keys: |
+            npm-
+
+      - name: Restore plugin cache
+        uses: actions/cache@v6
+        with:
+          path: .quartz/plugins
+          key: plugins-${{ hashFiles('package-lock.json', 'quartz.lock.json', 'quartz.config.yaml') }}
+          restore-keys: |
+            plugins-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install plugins
+        run: npx quartz plugin install
+
+      # 闸门第二道：本地能绕过，这里绕不过。非 0 退出 → workflow 失败 → 不部署。
+      - name: Validate entry contract
+        run: npm run check:entries
+
+      - name: Build site
+        run: npx quartz build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: public
+
+  deploy:
+    needs: build
+    # 只跟 push main 走：手工触发的分支产物不许上线上站点。
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
