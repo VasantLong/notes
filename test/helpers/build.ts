@@ -4,6 +4,7 @@ import path from "node:path"
 import os from "node:os"
 import fs from "node:fs/promises"
 import { fileURLToPath } from "node:url"
+import { parse as parseYaml } from "yaml"
 
 const run = promisify(execFile)
 
@@ -109,4 +110,17 @@ export function externalResourceUrls(
     if (ownHost && host === ownHost) return false
     return !NON_FETCH_HOSTS.has(host)
   })
+}
+
+/** 站点自己的域名：从 `quartz.config.yaml` 的 `baseUrl` 读，测试里不硬编码域名。 */
+export async function siteBaseUrl(): Promise<string> {
+  const raw = await fs.readFile(path.join(repoRoot, "quartz.config.yaml"), "utf8")
+  return String(parseYaml(raw).configuration.baseUrl)
+}
+
+/** 产物里仍在请求的第三方地址（"哪个文件: 哪个地址"），空数组即全部自托管。 */
+export function thirdPartyRequests(artifacts: Map<string, string>, ownHost: string): string[] {
+  return [...artifacts].flatMap(([rel, text]) =>
+    externalResourceUrls(text, { ownHost }).map((url) => `${rel}: ${url}`),
+  )
 }

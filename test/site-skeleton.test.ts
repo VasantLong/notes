@@ -7,8 +7,9 @@ import {
   buildSite,
   listArtifacts,
   readTextArtifacts,
-  externalResourceUrls,
   repoRoot,
+  siteBaseUrl,
+  thirdPartyRequests,
   tmpDir,
 } from "./helpers/build.ts"
 
@@ -156,14 +157,11 @@ describe("站点骨架：构建产物", () => {
   })
 
   test("产物里不存在任何第三方域名请求", async () => {
-    const config = parseYaml(await fs.readFile(path.join(repoRoot, "quartz.config.yaml"), "utf8"))
-    const offenders: string[] = []
-    for (const [name, content] of artifacts) {
-      for (const url of externalResourceUrls(content, { ownHost: config.configuration.baseUrl })) {
-        offenders.push(`${name}: ${url}`)
-      }
-    }
-    assert.deepEqual(offenders, [], "产物仍在请求第三方资源")
+    assert.deepEqual(
+      thirdPartyRequests(artifacts, await siteBaseUrl()),
+      [],
+      "产物仍在请求第三方资源",
+    )
   })
 
   test("第三方库改为自托管，且本地文件齐全", async () => {

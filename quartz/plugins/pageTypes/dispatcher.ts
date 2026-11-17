@@ -22,6 +22,7 @@ import { toHtml } from "hast-util-to-html"
 import { unified } from "unified"
 import { htmlToJsx } from "../../util/jsx"
 import { trace } from "../../util/trace"
+import { encodeInternalHrefs } from "../../util/url-encoding"
 import { attributeError, originOf } from "../../util/pluginErrors"
 import { rejectingFilter } from "../../processors/filter"
 import fs from "fs"
@@ -121,7 +122,9 @@ async function emitPage(
 
   return write({
     ctx,
-    content: renderPage(cfg, slug, componentData, layout, externalResources, treeTransforms),
+    content: encodeInternalHrefs(
+      renderPage(cfg, slug, componentData, layout, externalResources, treeTransforms),
+    ),
     slug,
     ext: ".html",
   })
