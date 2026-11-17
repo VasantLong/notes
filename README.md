@@ -6,13 +6,13 @@ Quartz 5 驱动的个人知识花园，部署在 <https://notes.vasantlong.de5.n
 
 ## 权威文档
 
-| 内容 | 位置 |
-| --- | --- |
-| 本仓词汇表（条目/晋升/发布态） | [`CONTEXT.md`](./CONTEXT.md) |
-| 完整规格（39 条用户故事 + 配置契约 + 测试接缝） | [`.scratch/garden-site/spec.md`](./.scratch/garden-site/spec.md) |
-| 为什么花园独立成站、为什么知识库不能当源 | [博客仓 ADR-0001 / ADR-0002](https://github.com/VasantLong/blog/tree/main/docs/adr) |
-| 两站分工的完整术语 | [博客仓 CONTEXT.md](https://github.com/VasantLong/blog/blob/main/CONTEXT.md) |
-| 实现票据 | [`.scratch/garden-site/issues/`](./.scratch/garden-site/issues) |
+| 内容                                            | 位置                                                                                |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------- |
+| 本仓词汇表（条目/晋升/发布态）                  | [`CONTEXT.md`](./CONTEXT.md)                                                        |
+| 完整规格（39 条用户故事 + 配置契约 + 测试接缝） | [`.scratch/garden-site/spec.md`](./.scratch/garden-site/spec.md)                    |
+| 为什么花园独立成站、为什么知识库不能当源        | [博客仓 ADR-0001 / ADR-0002](https://github.com/VasantLong/blog/tree/main/docs/adr) |
+| 两站分工的完整术语                              | [博客仓 CONTEXT.md](https://github.com/VasantLong/blog/blob/main/CONTEXT.md)        |
+| 实现票据                                        | [`.scratch/garden-site/issues/`](./.scratch/garden-site/issues)                     |
 
 ## 现状
 

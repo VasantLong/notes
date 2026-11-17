@@ -79,20 +79,20 @@ Status: ready-for-agent
 
 ### 站点配置（契约）
 
-| 键 | 值 | 理由 |
-|---|---|---|
-| `baseUrl` | `notes.vasantlong.de5.net` | cname 插件据此生成 CNAME |
-| `locale` | `zh-CN` | 日期/文案本地化 |
-| `analytics` | `null` | 无第三方 |
-| `enableSPA` / `enablePopovers` | `true` | 花园的核心交互 |
-| 字体 | 系统字体栈，关掉 `cdnCaching`/`googleFonts` | 消除第三方域名与 100–300KB 下载；中文本来回落到系统字体 |
-| `ignorePatterns` | `private`, `templates`, `.obsidian`, `inbox` | 第二道保险 |
-| `publishAssets` | `"referenced"` | 只拷已发布页面引用到的附件，否则 vault 里任何非 md 文件都会上线 |
-| `links.markdownLinkResolution` | `"shortest"` | Obsidian 默认，vault 原地搬过来即解析 |
-| `links.disableBrokenWikilinks` | `true` | 指向未发布页面的链接要被标出来 |
-| `contentIndex.enableSiteMap` | `true` | 要被搜索引擎发现 |
-| `contentIndex.enableRSS` | `false` | 花园不是时间流 |
-| `drafts.publish` | `false` | `draft: true` 一定被过滤 |
+| 键                             | 值                                           | 理由                                                            |
+| ------------------------------ | -------------------------------------------- | --------------------------------------------------------------- |
+| `baseUrl`                      | `notes.vasantlong.de5.net`                   | cname 插件据此生成 CNAME                                        |
+| `locale`                       | `zh-CN`                                      | 日期/文案本地化                                                 |
+| `analytics`                    | `null`                                       | 无第三方                                                        |
+| `enableSPA` / `enablePopovers` | `true`                                       | 花园的核心交互                                                  |
+| 字体                           | 系统字体栈，关掉 `cdnCaching`/`googleFonts`  | 消除第三方域名与 100–300KB 下载；中文本来回落到系统字体         |
+| `ignorePatterns`               | `private`, `templates`, `.obsidian`, `inbox` | 第二道保险                                                      |
+| `publishAssets`                | `"referenced"`                               | 只拷已发布页面引用到的附件，否则 vault 里任何非 md 文件都会上线 |
+| `links.markdownLinkResolution` | `"shortest"`                                 | Obsidian 默认，vault 原地搬过来即解析                           |
+| `links.disableBrokenWikilinks` | `true`                                       | 指向未发布页面的链接要被标出来                                  |
+| `contentIndex.enableSiteMap`   | `true`                                       | 要被搜索引擎发现                                                |
+| `contentIndex.enableRSS`       | `false`                                      | 花园不是时间流                                                  |
+| `drafts.publish`               | `false`                                      | `draft: true` 一定被过滤                                        |
 
 插件矩阵：**开** explicit-publish、bases-page、canvas-page、note-properties（`includeAll: false`，只显示 description）、alias-redirects、backlinks、graph、explorer、search、table-of-contents、latex、obsidian-flavored-markdown、github-flavored-markdown、syntax-highlighting、breadcrumbs、darkmode、reader-mode、article-title、page-title、description、content-meta、created-modified-date、favicon、cname、footer、spacer、unlisted-pages；**关** encrypted-pages（默认开，必须显式关）、og-image、comments、citations、roam、ox-hugo、recent-notes、stacked-pages、tag-list。其余保持默认。
 
