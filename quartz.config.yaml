@@ -76,9 +76,8 @@ plugins:
     options:
       enableInHtmlEmbed: false
       enableCheckbox: true
-      # mermaid 的加载脚本默认从 cdnjs 取（https://cdnjs.cloudflare.com/ajax/libs/mermaid/…）。
-      # 在自托管份就位前先关掉渲染器，别让每个页面都去请求第三方；ticket 08（富内容）接管并自托管。
-      mermaid: false
+      # 围栏 mermaid 代码块在浏览器里出图；运行时的地址改写见 quartz/util/self-host.ts
+      mermaid: true
     order: 40
   - source: "@quartz-community/table-of-contents"
     enabled: true

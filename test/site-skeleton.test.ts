@@ -171,6 +171,9 @@ describe("站点骨架：构建产物", () => {
       "static/vendor/d3.min.js",
       "static/vendor/pixi.min.js",
       "static/vendor/katex/katex.min.css",
+      // mermaid 运行时与它的载入器薄壳（图渲染脚本 import 的就是这个载入器，别再指回 cdnjs）
+      "static/mermaid-loader.js",
+      "static/vendor/mermaid/mermaid.min.js",
     ]
     for (const rel of required) {
       assert.ok(files.includes(rel), `缺自托管资源 ${rel}`)

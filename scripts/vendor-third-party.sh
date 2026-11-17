@@ -6,6 +6,7 @@ set -euo pipefail
 KATEX_VERSION=0.16.11   # @quartz-community/latex 硬编码的版本
 D3_VERSION=7.9.2        # @quartz-community/graph 用 d3@7
 PIXI_VERSION=8.23.0     # @quartz-community/graph 用 pixi.js@8
+MERMAID_VERSION=11.4.0  # @quartz-community/obsidian-flavored-markdown 硬编码的版本
 
 repo_root=$(cd "$(dirname "$0")/.." && pwd)
 vendor_dir="$repo_root/quartz/static/vendor"
@@ -14,10 +15,10 @@ work=$(mktemp -d)
 trap 'rm -rf "$work"' EXIT
 
 npm pack --pack-destination "$work" \
-  "katex@$KATEX_VERSION" "d3@$D3_VERSION" "pixi.js@$PIXI_VERSION" >/dev/null
+  "katex@$KATEX_VERSION" "d3@$D3_VERSION" "pixi.js@$PIXI_VERSION" "mermaid@$MERMAID_VERSION" >/dev/null
 
-# 每个包单独解到自己的目录：三个 tarball 的顶层都叫 package/，混解会互相覆盖。
-for pkg in katex d3 pixi.js; do
+# 每个包单独解到自己的目录：几个 tarball 的顶层都叫 package/，混解会互相覆盖。
+for pkg in katex d3 pixi.js mermaid; do
   mkdir -p "$work/$pkg"
   tar -xzf "$work/$pkg"-*.tgz -C "$work/$pkg"
 done
@@ -28,6 +29,9 @@ cp "$work"/katex/package/dist/contrib/copy-tex.min.js "$vendor_dir/katex/copy-te
 cp "$work"/katex/package/dist/fonts/*.woff2 "$vendor_dir/katex/fonts/"
 cp "$work"/d3/package/dist/d3.min.js "$vendor_dir/d3.min.js"
 cp "$work"/pixi.js/package/dist/pixi.min.js "$vendor_dir/pixi.min.js"
+# mermaid 取 UMD 单文件（不用 ESM 目录，理由见 quartz/static/mermaid-loader.js）
+mkdir -p "$vendor_dir/mermaid"
+cp "$work"/mermaid/package/dist/mermaid.min.js "$vendor_dir/mermaid/mermaid.min.js"
 
 # pixi 里那段 CDN 地址是压缩纹理转码器（basis/ktx）的基地址，向量图谱永远用不到；
 # 改成指向本地空目录，好让「产物不含第三方地址」这条断言不需要任何例外名单。
@@ -44,5 +48,5 @@ if grep -qE 'url\(fonts/[^)]+\.(woff|ttf)\)' "$vendor_dir/katex/katex.min.css"; 
   exit 1
 fi
 
-echo "vendored: katex $KATEX_VERSION, d3 $D3_VERSION, pixi.js $PIXI_VERSION -> quartz/static/vendor/"
+echo "vendored: katex $KATEX_VERSION, d3 $D3_VERSION, pixi.js $PIXI_VERSION, mermaid $MERMAID_VERSION -> quartz/static/vendor/"
 du -sh "$vendor_dir"
