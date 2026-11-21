@@ -4,13 +4,13 @@
 
 **Blocked by:** 10（要先有 Pages 部署才能挂域名）.
 
-**Status:** in-progress（步骤 2/4 已完成；步骤 1 的 DNS 记录缺 Cloudflare 凭据，需人工或注入 token）
+**Status:** resolved（2026-11-21：DNS、证书、强制 HTTPS 三件全部实测通过）
 
 - [x] 产物里的 CNAME 内容等于 notes.vasantlong.de5.net（`public/CNAME`，由 `@quartz-community/cname` 按 `baseUrl` 生成）
-- [ ] 按 runbook 三步执行：先写 CNAME → 轮询证书状态到 approved → 再开强制 HTTPS；每步标注执行位置与验证方式（第 2 步 `PUT cname` 已完成；第 1 步 DNS 未做、第 3 步待证书）
-- [ ] 每步的外部证据齐备（dig / curl / openssl / 托管方 API 状态），不看中间日志（已采：`dig` NXDOMAIN、默认域名 301、`pages` API 无 `https_certificate` 字段；待采：DNS 生效后的 4 项验收）
-- [ ] https 正常、http 自动跳转，浏览器无证书告警（**阻塞在第 1 步**）
-- [ ] 不带结尾斜杠的 URL 从任意来源可打开（含从博客文章点过来的绝对链接）（**阻塞在第 1 步**）
+- [x] 按 runbook 三步执行：先写 CNAME → 轮询证书状态到 approved → 再开强制 HTTPS；每步标注执行位置与验证方式（三步全部走完，证据见 Comments）
+- [x] 每步的外部证据齐备（dig / curl / openssl / 托管方 API 状态），不看中间日志（`dig` 出 `VasantLong.github.io.` + 4 个 185.199.x.153；证书 `CN=notes.vasantlong.de5.net`，Let's Encrypt，2027-02-19 到期；条目页 200、未知路径 404、http 条目页 301）
+- [x] https 正常、http 自动跳转，浏览器无证书告警（条目页 https 200，http 同一路径 301 到 https）
+- [x] 不带结尾斜杠的 URL 从任意来源可打开（含从博客文章点过来的绝对链接）（裸 UTF-8 与百分号编码两种写法都 200）
 - [x] 失败处置与回滚写在票内：证书长期 pending、CNAME 冲突、强制 HTTPS 提前开启各有一条（见 Comments 的「失败处置」）
 
 ## Comments
@@ -39,3 +39,8 @@
   - **CNAME 冲突**：同名已有 A/AAAA/TXT 时先删旧记录；CF 不允许同一 Name 同时存在 CNAME 与其它类型。
   - **提前开了强制 HTTPS**：全站返回证书错误或 404，回退是 `PUT /repos/VasantLong/notes/pages` body `{"https_enforced":false}`，等证书 approved 再开。
 - **附带影响（现在就是线上故障）**：Pages 一挂上自定义域名，默认域名 `https://vasantlong.github.io/notes/` 就 301 到 `http://notes.vasantlong.de5.net/`（实测 301，`server: GitHub.com`），而后者 NXDOMAIN——公开仓的站点此刻**两处都打不开**，本票优先级高于其余待办。
+
+- **收尾（2026-11-21 16:55–17:10）**：用户在 Cloudflare 面板加了 `CNAME notes → VasantLong.github.io`（Proxy 关闭），`dig +short notes.vasantlong.de5.net` 立刻出 `VasantLong.github.io.` 与 4 个 `185.199.x.153`。**证书没有自动签发**：加了 DNS 之后等了约 10 分钟、又重跑了一次部署（`gh run rerun`），`https_certificate` 字段仍然缺席，HTTPS 一直拿 `*.github.io` 的证书（`curl` 报 `no alternative certificate subject name matches`）。**解法是把自定义域名摘掉再挂回去**：`PUT /pages {"cname":null}`（此时 `https_enforced` 显示 true、无证书）→ 立刻 `PUT /pages {"cname":"notes.vasantlong.de5.net"}` → 25 秒后 `https_certificate.state == approved`、`domains:["notes.vasantlong.de5.net"]`、`expires_at 2027-02-19`。再 `PUT /pages {"https_enforced":true}`（摘挂域名会把它打回 false，必须重开）。
+- **验收实测**（全部外部证据）：`dig` → `VasantLong.github.io.` + 4 个 GitHub Pages IP；`openssl s_client` → `subject=CN=notes.vasantlong.de5.net`、`issuer=Let's Encrypt YR1`、`notAfter=Feb 19 2027`；`curl https://…/这座花园是什么` 与百分号编码写法都 200；`curl http://…/这座花园是什么` → 301 到 https；`curl https://…/no-such-page/` → 404；`https_enforced: true` 已落库。
+- **一个仍然存在的洞**（归票 13）：http/https 的根路径 `/` 都返回 404 —— 产物没有 `index.html`，而 GitHub 的强制 HTTPS 对不存在的路径直接 404、不先 301。首页落地后这条会自愈。
+- **证书是逐边缘生效的**：刚 approved 时仍有部分边缘节点返回 `*.github.io` 证书（实测一次 `curl` 报 000），等几分钟再测即一致——验收时不要拿单次失败当故障。
