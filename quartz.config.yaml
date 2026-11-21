@@ -209,6 +209,8 @@ plugins:
     enabled: true
     options:
       links: {}
+      # 内容许可：每页页脚一行，链到 /license（笔记内容 CC BY 4.0，站点代码 MIT）
+      message: '笔记内容 <a href="/license">CC BY 4.0</a> · 站点代码 <a href="https://github.com/VasantLong/notes/blob/main/LICENSE.txt">MIT</a>'
     layout:
       position: footer
       priority: 50

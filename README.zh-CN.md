@@ -35,4 +35,4 @@
 
 ## 许可
 
-站点代码沿用 [LICENSE.txt](LICENSE.txt) 的 MIT 许可；笔记内容版权归 VasantLong。
+**笔记内容**按 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.zh-hans) 许可：转载、改编、商用都可以，注明作者 VasantLong 并链回原页面即可。**站点代码**沿用 [LICENSE.txt](LICENSE.txt) 的 MIT 许可。细则见 </license>。
