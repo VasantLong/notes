@@ -128,11 +128,21 @@ plugins:
     enabled: true
   - source: "@quartz-community/explorer"
     enabled: true
+    options:
+      # 默认展开目录、点目录名就是展开/收起：默认的「折叠 + 点名字跳目录页」会让读者
+      # 只看到一个目录名（如「党团」），点进去是空壳目录页，以为条目不存在。
+      folderDefaultState: open
+      folderClickBehavior: collapse
     layout:
       position: left
       priority: 50
   - source: "@quartz-community/graph"
     enabled: true
+    options:
+      # 侧栏是局部图谱：默认只看 1 层邻居，单簇花园里几乎只剩三个点。给 2 层；
+      # 想看全站仍点右上角的全局图谱按钮（globalGraph 保持默认 depth -1）。
+      localGraph:
+        depth: 2
     layout:
       position: right
       priority: 10

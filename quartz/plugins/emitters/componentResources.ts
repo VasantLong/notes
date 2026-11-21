@@ -9,6 +9,8 @@ import spaRouterScript from "../../components/scripts/spa.inline"
 import popoverScript from "../../components/scripts/popover.inline"
 // @ts-ignore
 import prefetchScript from "../../components/scripts/prefetch.inline"
+// @ts-ignore
+import explorerExpandScript from "../../components/scripts/explorer-expand.inline"
 import baseStyles from "../../styles/base.scss"
 import customStyles from "../../styles/custom.scss"
 import popoverStyle from "../../components/styles/popover.scss"
@@ -93,6 +95,9 @@ async function joinScripts(scripts: string[]): Promise<string> {
 
 function addGlobalPageResources(ctx: BuildCtx, componentResources: ComponentResources) {
   const cfg = ctx.cfg.configuration
+
+  // 文件树默认展开：上游 explorer 的 folderDefaultState 只写属性不消费，见脚本顶部注释
+  componentResources.afterDOMLoaded.push(explorerExpandScript)
 
   // popovers
   if (cfg.enablePopovers) {

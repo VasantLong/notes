@@ -283,6 +283,32 @@ describe("导航与阅读面：组件生成的站内链接", () => {
     }
   })
 
+  // 文件树的展开状态是客户端行为，产物里看不到渲染结果；这里只能钉住"补丁还在"：
+  // 上游 explorer 的 folderDefaultState 只写 data-collapsed 属性、客户端不读，默认永远折叠，
+  // 所以本站自带一段 afterDOM 脚本（quartz/components/scripts/explorer-expand.inline.ts）补默认展开。
+  test("文件树默认展开目录：自带脚本补上上游只写不读的 folderDefaultState", () => {
+    const html = artifacts.get("根条目.html") ?? ""
+    const explorer = /<div[^>]*\bexplorer\b[^>]*>/.exec(html)?.[0]
+    assert.ok(explorer, "页面里应有文件树容器")
+    assert.match(explorer!, /data-collapsed="open"/, "文件树容器的默认态应声明为展开")
+
+    const code = scriptClosure("根条目.html", html)
+      .map((src) => artifacts.get(src) ?? "")
+      .join("\n")
+    assert.match(code, /\.explorer \.folder-container/, "缺「找出目录节点」的脚本")
+    assert.match(code, /folder-outer/, "缺「把目录内容展开」的逻辑")
+    assert.match(code, /fileTree/, "展开补丁应沿用 explorer 自己保存的折叠状态")
+  })
+
+  test("侧栏图谱默认给当前条目两层邻居，全局图谱仍由右上角按钮打开", () => {
+    const html = artifacts.get("根条目.html") ?? ""
+    const rawCfg = /<div[^>]*class="graph-container"[^>]*data-cfg="([^"]*)"/.exec(html)?.[1]
+    assert.ok(rawCfg, "页面里应有局部图谱容器")
+    const cfg = JSON.parse(rawCfg!.replaceAll("&quot;", '"').replaceAll("&amp;", "&"))
+    assert.equal(cfg.depth, 2, "局部图谱默认深度应是 2 层邻居，而不是 1 层")
+    assert.match(html, /class="global-graph-icon"/, "缺全局图谱的打开按钮")
+  })
+
   test("产物里不存在任何第三方域名请求", async () => {
     assert.deepEqual(
       thirdPartyRequests(artifacts, await siteBaseUrl()),
