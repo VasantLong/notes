@@ -1,0 +1,25 @@
+---
+publish: true
+title: 这座花园
+description: 可以独立阅读的笔记：一条讲一个概念，不是时间流。
+date: 2026-11-21
+tags:
+  - 花园
+---
+
+这里收的是**定稿的笔记条目**，每条讲一个可以独立提问的概念或判据。没标发布的不在这里出现——它们不存在，而不是被藏起来。
+
+## 从这里开始
+
+- [[这座花园是什么]]
+
+## 怎么找东西
+
+- 左侧文件树按目录浏览
+- `Cmd/Ctrl+K` 搜索（中文只能词首命中，见 [已知降级](https://github.com/VasantLong/notes/blob/main/DEGRADATIONS.md)）
+- 页面底部的反向链接 + 右上角的图谱可以顺着概念走
+
+## 关于
+
+- 博客：<https://vasantlong.de5.net>
+- GitHub：<https://github.com/VasantLong>
