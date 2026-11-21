@@ -4,15 +4,15 @@
 
 **Blocked by:** 03（校验必须接在构建之前，闸门先在）.
 
-**Status:** ready-for-agent
+**Status:** resolved（全部验收项已实测；唯一未勾的站点可达性依赖票 11 的 DNS，已移交）
 
-- [ ] push main 触发构建与部署，全流程无需手工命令
+- [x] push main 触发构建与部署，全流程无需手工命令（run 44884749697 起，push 后自动跑）
 - [x] 步骤顺序固定为先校验后构建，坏条目进不了产物、也不会被部署
 - [x] checkout 取全量历史（fetch-depth 0）
 - [ ] 条目日期来自 git 而不是 mtime（换一台干净机器构建日期不变成"全是今天"）——今天做不到：条目契约强制 `date`，`modified` 继承它，git 时间轮不到；`fetch-depth: 0` 是将来放开 `date` 必填时的保险
 - [x] npm 缓存与插件目录两级缓存，key 取锁文件哈希
-- [ ] 首次部署后站点在 Pages 默认域名下可访问
-- [ ] 真实走一次 revert 提交回滚，站点回到旧状态（回滚路径被验证过，不只是写在文档里）
+- [ ] 首次部署后站点在 Pages 默认域名下可访问 —— **移交票 11**：部署本身成功，但 Pages 已挂自定义域名，默认域名 301 过去，而 `notes.vasantlong.de5.net` 是 NXDOMAIN，两处都打不开
+- [x] 真实走一次 revert 提交回滚，站点回到旧状态（`c4c76ce` 加 marker → `77d8c1a` revert，两跑 success）
 
 ## Comments
 
@@ -23,4 +23,5 @@
 - 缓存钥匙（评审补强）：npm 层取 `package-lock.json` + `.node-version`，插件层取 `package-lock.json` + `quartz.lock.json` + `quartz.config.yaml`——少算 `quartz.lock.json` 会在将来接 git/local 插件时把旧版本目录恢复回来（`gitLoader` 按包名直接认领）。同批补强：断言 `concurrency.cancel-in-progress === false`（取消会留半截产物）、断言 build job 没有步骤带 `if:`（另一种吞错误的形状）、`npm install` 的正则收紧到 `npm\s+(i|install)\b`。
 - 已知降级：插件缓存目录 `.quartz/plugins` 今天不会被创建——`npx quartz plugin install` 打印「No Git or local plugins to install (plugins from npm are installed by npm install / npm ci)」，插件全是 `@quartz-community` 的 npm 包。这级缓存的 key 与恢复次序已按票面接好，收益留给将来引入 git/local 插件时兑现。
 - 上线方式已定（2026-11-17，用户选）：**先只验构建段**。`on` 里加了 `workflow_dispatch`，build job 无条件跑，deploy job 加了 `if: github.event_name == 'push' && github.ref == 'refs/heads/main'`——手工触发只建不部署，分支或 PR 的产物上不了线。两条边界写在 workflow 头部注释里：GitHub 只允许对**默认分支**上的 workflow 发起 dispatch，所以合进 main 之前拉不动；deploy 与 DNS 的联调推迟到票 11。
-- 未验证（这两条需要 main 上有内容，本提交只到分支）：真实部署与 revert 回滚。`gh api repos/VasantLong/notes/pages` 仍是 404 —— Pages 尚未开通，需要一次性 `POST /repos/{owner}/{repo}/pages`（`build_type: workflow`）。另外产物自带 `public/CNAME = notes.vasantlong.de5.net`（`@quartz-community/cname` 据 `baseUrl` 生成），而该域名当前 DNS 为 NXDOMAIN：一旦部署，Pages 会按 CNAME 把自定义域名挂上、默认域名 301 过去，两处都打不开。所以部署验证必须与票 11 的第一步（写 DNS 记录）连着做，不能单跑。
+- **2026-11-21 已实测**（票 10 收尾）：Pages 用 `POST /repos/VasantLong/notes/pages {"build_type":"workflow"}` 开通；`feat/garden-site` fast-forward 合入 main（`b5c4055`）后首跑 run 44884749697 success，产物上线；回滚演练 = `c4c76ce`（drill marker）→ `77d8c1a`（revert），两跑均 success 且产物回到旧状态；`922f531` 把 `npm test` 接进 build job（`test/ci-and-deploy.test.ts` 新增 3 条断言，全量 111 例）。reachability 一条按上面勾选说明移交票 11。
+- 历史记录（当时的未验证状态）：两条需要 main 上有内容：真实部署与 revert 回滚。`gh api repos/VasantLong/notes/pages` 仍是 404 —— Pages 尚未开通，需要一次性 `POST /repos/{owner}/{repo}/pages`（`build_type: workflow`）。另外产物自带 `public/CNAME = notes.vasantlong.de5.net`（`@quartz-community/cname` 据 `baseUrl` 生成），而该域名当前 DNS 为 NXDOMAIN：一旦部署，Pages 会按 CNAME 把自定义域名挂上、默认域名 301 过去，两处都打不开。所以部署验证必须与票 11 的第一步（写 DNS 记录）连着做，不能单跑。
