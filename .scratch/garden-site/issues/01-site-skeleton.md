@@ -20,4 +20,4 @@
 - 已知降级：OFM 的 mermaid loader 会拉 cdnjs，暂时在配置里关掉 mermaid（`options.mermaid: false`），由 08（富内容）自托管后恢复。
 - 预览实测：`npx quartz build --serve --port 8191` → 条目页 200、`<title>这座花园是什么</title>`。根路径 `/` 目前 404，因为花园库还没有首页，首页归 09。
 - 干净目录复现：`npm ci` 在`/tmp` 复制目录里通过（82 个直接依赖版本与锁文件完全一致）；注意仓库 `.npmrc` 的 `engine-strict`/`legacy-peer-deps` 必须一起带上，否则 npm 报 lock 缺包。
-- 遗留：`npm run check` 仍报 `README.md`、`.scratch/garden-site/spec.md` 的 prettier 格式问题，这两处在本次改动之前就存在，未顺手改。
+- 遗留已清（2026-11-21）：`npm run check` 全仓通过，`README.md` 与 `spec.md` 的 prettier 格式不再告警。
