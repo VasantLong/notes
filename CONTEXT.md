@@ -1,6 +1,12 @@
-# Notes — 花园站
+# Notes — 数字花园（digital garden）
 
 本仓只关心"条目如何变成站点"。两站分工（博客 vs 花园）的完整词汇在 [博客仓 CONTEXT.md](https://github.com/VasantLong/blog/blob/main/CONTEXT.md)，这里只保留本仓要用的部分。
+
+## 站点
+
+**数字花园 (Digital Garden)**:
+按概念组织的笔记站，没有时间流；本仓产出把它部署在 `notes.vasantlong.de5.net`。英文 digital garden 是这个形态的通行叫法（Quartz 自身就以此定位）。
+_Avoid_: 博客, 花园站
 
 ## 内容单位
 
@@ -13,7 +19,7 @@ _Avoid_: 文章, 条目
 _Avoid_: 卡片, note, 小文章
 
 **花园库 (Garden Vault)**:
-本仓的 `content/` 目录，花园站唯一的内容源；其中一切默认对读者存在。
+本仓的 `content/` 目录，数字花园唯一的内容源；其中一切默认对读者存在。
 _Avoid_: public 目录, 发布库
 
 **晋升 (Promotion)**:
