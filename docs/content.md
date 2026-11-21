@@ -25,6 +25,15 @@
 
 ## 晋升步骤
 
+> 批量晋升用脚本，不要手抄 frontmatter：
+>
+> ```bash
+> npx tsx scripts/promote.ts --from ~/文档/demo/党团 --to content/党团 \
+>   --tag 党团 --descriptions /tmp/descriptions.json
+> ```
+>
+> 它复制目录结构、按源文件 mtime 填 `date`、生成 `publish: true`/标题、跳过 0 字节文件、保留原 `tags`/`aliases`。`description` 需要人写：没给映射表（`{"相对路径": "描述"}`）就留空并以 1 退出，补齐后再跑闸门；目标已存在时默认不覆盖（`--force` 才改写，否则以 3 退出）。`--dry-run` 只打印计划。
+
 1. **复制，不改写**：目录、文件名原样搬进 `content/`。中文不转写、空格转 `-`，URL 跟随路径。
 2. **补前置字段**：用上面的四字段表格逐条填；正文一个字都别动。
 3. **空文件不晋升**：0 字节笔记没有内容可写 `description`，进了 `content/` 只会留一条断链。要么补写，要么留在 vault。

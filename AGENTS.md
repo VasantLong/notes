@@ -15,6 +15,7 @@
 npm run check:entries   # 条目四字段闸门，非 0 退出 = CI 会红
 npm test                # 全部产物级测试（串行，见下）
 npm run check           # tsc --noEmit + prettier --check
+npx tsx scripts/promote.ts --from <vault 目录> --to content/<主题> [--tag 标签]   # 批量晋升
 npx quartz build        # 只构建到 public/
 npx quartz build --serve  # 本地预览 :8080
 ```
@@ -22,7 +23,7 @@ npx quartz build --serve  # 本地预览 :8080
 ## 硬规则
 
 1. **条目四字段**：`publish: true`（布尔真）/ `title` / `description`（≤80 字）/ `date`。缺项 `check:entries` 非 0。
-2. **改内容前读 `docs/content.md`**；改站点/CI/域名前读 `docs/deploy.md`。降级与硬约束在 `DEGRADATIONS.md`。
+2. **晋升用 `scripts/promote.ts`**，不要手抄 frontmatter；改内容前读 `docs/content.md`，改站点/CI/域名前读 `docs/deploy.md`。降级与硬约束在 `DEGRADATIONS.md`。
 3. **`tmp/` 已 gitignore**：不能当 `-d` 输入（Quartz 输入 glob 遵守 gitignore，会报 `Found 0 input files`）；临时 fixture 放 `.scratch/`。
 4. **`npm test` 必须串行**（脚本已带 `--test-concurrency=1`）：并行会因共享 `quartz/.quartz-cache/transpiled-build.mjs` 偶发 `buildQuartz is not a function`。
 5. **断言落在产物上**，不断言 HTML 结构细节与插件内部函数名；日志只是线索，不是证据。
