@@ -12,6 +12,11 @@ on:
   push:
     branches:
       - main
+  # 分支上的改动也跑一遍（构建 + 测试，不部署）：deploy job 只认 push main，
+  # 所以这里的产物永远不会上线，只是把"合进 main 才发现"提前到 PR 上。
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -69,6 +74,11 @@ jobs:
       # 闸门第二道：本地能绕过，这里绕不过。非 0 退出 → workflow 失败 → 不部署。
       - name: Validate entry contract
         run: npm run check:entries
+
+      # 测试接进流水线（票 12）：13 个测试文件此前只在本地跑，服务端从不执行，
+      # "流水线形状由测试钉住"就只在本机成立。测试自己会真构建 fixture 站点。
+      - name: Run tests
+        run: npm test
 
       - name: Build site
         run: npx quartz build

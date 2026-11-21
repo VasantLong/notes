@@ -218,3 +218,32 @@ describe("CI：推 main 就上线", () => {
     assert.equal(node.with?.["node-version-file"], ".node-version")
   })
 })
+
+describe("CI：测试接进流水线（票 12）", () => {
+  test("分支上的改动也跑构建：pull_request 触发存在，且 base 是 main", async () => {
+    const wf = await loadWorkflow()
+    const pr = wf.on?.pull_request as { branches?: string[] } | undefined
+    assert.ok(pr, "缺 pull_request 触发：分支上的坏改动只能等合进 main 才发现")
+    assert.deepEqual(pr.branches, ["main"])
+  })
+
+  test("构建 job 跑 test/ 下的测试，且在上传产物之前", async () => {
+    const wf = await loadWorkflow()
+    const steps = wf.jobs.build.steps
+    const testStep = indexOfStep(steps, (_step, label) => /npm test|tsx --test/.test(label))
+    assert.ok(testStep >= 0, "构建 job 必须跑 test/ 下的测试：服务端今天从不执行它们")
+
+    const upload = indexOfStep(steps, (step) =>
+      Boolean(step.uses?.startsWith("actions/upload-pages-artifact@")),
+    )
+    assert.ok(upload >= 0)
+    assert.ok(testStep < upload, "测试要在上传产物之前跑")
+  })
+
+  test("跑测试不改变上线闸门：deploy 仍只跟 push main 走", async () => {
+    const wf = await loadWorkflow()
+    const gate = String(wf.jobs.deploy.if ?? "")
+    assert.match(gate, /github\.event_name\s*==\s*'push'/)
+    assert.match(gate, /github\.ref\s*==\s*'refs\/heads\/main'/)
+  })
+})
