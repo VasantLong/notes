@@ -94,9 +94,11 @@ Status: ready-for-agent
 | `contentIndex.enableRSS`       | `false`                                      | 花园不是时间流                                                  |
 | `drafts.publish`               | `false`                                      | `draft: true` 一定被过滤                                        |
 
-插件矩阵：**开** explicit-publish、bases-page、canvas-page、note-properties（`includeAll: false`，只显示 description）、alias-redirects、backlinks、graph、explorer、search、table-of-contents、latex、obsidian-flavored-markdown、github-flavored-markdown、syntax-highlighting、breadcrumbs、darkmode、reader-mode、article-title、page-title、description、content-meta、created-modified-date、favicon、cname、footer、spacer、unlisted-pages；**关** encrypted-pages（默认开，必须显式关）、og-image、comments、citations、roam、ox-hugo、recent-notes、stacked-pages、tag-list。其余保持默认。
+插件矩阵：**开** explicit-publish、bases-page、canvas-page、note-properties（`includeAll: false`，只显示 description）、alias-redirects、backlinks、graph、explorer、search、table-of-contents、latex、obsidian-flavored-markdown、github-flavored-markdown、syntax-highlighting、breadcrumbs、darkmode、reader-mode、article-title、page-title、description、content-meta、created-modified-date、favicon、cname、footer、spacer、unlisted-pages、tag-list；**关** encrypted-pages（默认开，必须显式关）、og-image、comments、citations、roam、ox-hugo、recent-notes、stacked-pages。其余保持默认。
 
 不使用 permalink 覆盖：URL 跟随路径，改名靠 aliases 兜底，避免"路径"与"permalink"两个真相源。
+
+标签：条目上的标签必须可点、正文行内 `#标签` 必须落在同一张标签页上，读者也不必猜 URL（首页给出 `/tags/` 入口）。标签页由 tag-page 插件按内容自动生成（`/tags/<标签>` 与 `/tags/` 索引），tag-list 只负责在条目页把标签渲染出来，因此开 tag-list 不引入新的页型或新的维护面。
 
 ### 条目契约与闸门
 

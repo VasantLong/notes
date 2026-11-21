@@ -31,7 +31,7 @@ npx quartz plugin install     # 插件进 .quartz/plugins，版本由 quartz.loc
 
 ```bash
 npm run check:entries   # 条目四字段闸门（publish/title/description/date），违约即非 0 退出
-npm test                # 13 个测试文件 / 118 例，串行
+npm test                # 14 个测试文件 / 125 例，串行
 npm run test:quartz     # vendored Quartz 自己的单测（可选，CI 不跑）
 npm run check           # tsc --noEmit + prettier --check
 npx quartz build --serve   # 本地预览 http://localhost:8080
