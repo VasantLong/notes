@@ -63,7 +63,7 @@ Status: ready-for-agent
 34. 作为作者，我想让条目改名后旧 URL 仍能打开（靠 aliases 跳转页），因为 GitHub Pages 不做服务端重定向。
 35. 作为作者，我想在本地 `--serve` 预览，确认语法与链接都对再 push。
 36. 作为运维者（我自己），我想在出事时能用一次 revert 提交回滚站点，而不是手改产物。
-37. 作为未来的我，我想让 README 能独立复现整套部署（DNS、证书、CI、缓存 key），不必回看聊天记录。
+37. 作为未来的我，我想让仓里的文档（README 门面 + `docs/deploy.md`）能独立复现整套部署（DNS、证书、CI、缓存 key），不必回看聊天记录。
 38. 作为未来的我，我想让花园仓的 `CONTEXT.md` 词汇表与 ADR 是权威的术语与决策出处，代码与文档都用同一套词。
 39. 作为读者，我想让花园页面的正文与代码块在高 DPI 屏和窄屏上都不溢出。
 
@@ -118,7 +118,7 @@ Status: ready-for-agent
 ### 文档归属
 
 - `CONTEXT.md` 与 `docs/adr/0001`、`0002` 暂留在博客仓（设计在这里发生），花园仓建立后把术语与 ADR 复制过去并在此处标注指向。
-- 花园仓 README 承载复现 runbook、已知降级清单与"花园库只放定稿"的纪律说明。
+- 文档按读者分层（2026-11-21 拆分）：`README.md`（英文门面）+ `README.zh-CN.md`（中文门面）、`docs/deploy.md`（复现 runbook）、`docs/content.md`（写作与晋升）、`AGENTS.md`（agent 硬规则）、`DEGRADATIONS.md`（已知降级）。边界由 `test/readme-bilingual.test.ts` 钉住。
 
 ## Testing Decisions
 

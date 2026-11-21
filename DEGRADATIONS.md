@@ -30,4 +30,4 @@
 ## 构建与测试
 
 - **测试串行**（`--test-concurrency=1`）。每个 fixture 都真跑一次 `quartz build`，构建期把 `quartz/.quartz-cache/transpiled-build.mjs` 固定写在同一路径；并行时两个进程互相覆盖那份临时包，偶发 `buildQuartz is not a function`。
-- **条目日期今天不可能来自 git**：条目契约强制 `date`，`modified` 继承它，git 时间轮不到。`fetch-depth: 0` 是将来放开 `date` 必填时的保险。
+- **条目日期目前不可能来自 git**：条目契约强制 `date`，`modified` 继承它，git 时间轮不到。`fetch-depth: 0` 是将来放开 `date` 必填时的保险。

@@ -35,4 +35,4 @@ Working in this repository as an agent? Read [AGENTS.md](AGENTS.md) first.
 
 ## License
 
-The **notes** are licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — reuse and adapt them, just credit VasantLong and link back. The **site code** follows the MIT license in [LICENSE.txt](LICENSE.txt). Details: </license>.
+The **notes** are licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) — reuse and adapt them, just credit VasantLong and link back. The **site code** follows the MIT license in [LICENSE.txt](LICENSE.txt). Details: [the license page](https://notes.vasantlong.de5.net/license).
