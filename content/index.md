@@ -16,7 +16,7 @@ tags:
 ## 怎么找东西
 
 - 左侧文件树按目录浏览
-- `Cmd/Ctrl+K` 搜索（中文只能词首命中，见 [已知降级](https://github.com/VasantLong/notes/blob/main/DEGRADATIONS.md)）
+- `Cmd/Ctrl+K` 搜索（中文只能词首命中，这是已知降级）
 - 页面底部的反向链接 + 右上角的图谱可以顺着概念走
 
 ## 关于
