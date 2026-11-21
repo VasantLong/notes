@@ -90,6 +90,7 @@ describe("站点骨架：配置契约", () => {
       "footer",
       "spacer",
       "unlisted-pages",
+      "tag-list",
     ]
     const mustBeOff = [
       "encrypted-pages",
@@ -100,7 +101,6 @@ describe("站点骨架：配置契约", () => {
       "ox-hugo",
       "recent-notes",
       "stacked-pages",
-      "tag-list",
     ]
     for (const name of mustBeOn) {
       assert.equal(state.get("@quartz-community/" + name), true, `${name} 应开启`)
