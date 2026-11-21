@@ -15,6 +15,8 @@
 
 ## Comments
 
+- 2026-11-21 文档职责拆分：README 当时同时承担了门面与运维手册，跟 AGENTS.md 的职责重叠。现拆为 `README.md`（英文门面）+ `README.zh-CN.md`（中文门面）、`docs/deploy.md`（复现/校验/CI/域名/回滚/硬规则）、`docs/content.md`（写作与晋升 runbook）、`AGENTS.md`（本仓 agent 硬规则）。边界由 `test/readme-bilingual.test.ts` 钉住：两份 README 都不得出现 `deploy.yml`/`fetch-depth`/`PUT /repos/` 这类运维细节，`docs/` 两份文档必须写清四字段与校验命令。候选名"花园站"不是通行叫法，术语统一为**数字花园（digital garden）**，见 `CONTEXT.md` 的「站点」段。
+
 - 落地件：`README.md`（干净 clone 复现、校验/测试/预览、CI 与部署、域名与证书三步、缓存 key、硬规则）、`DEGRADATIONS.md`（五类已知降级，每条带“为什么 + 什么时候重看”）、`adr/0001` 与 `adr/0002`（副本，头部回链博客仓真相源）、`CONTEXT.md` 保留为仓内词汇表。
 - 测试接进 CI：`922f531` 在 build job 的字段校验之后、构建之前插入 `npm test`，并给 `pull_request` 加了只构建不部署的触发；`test/ci-and-deploy.test.ts` 补了 3 条断言钉住这件事（`npm test` 在 `npx quartz build` 之前、PR 触发存在、`deploy` job 的 `if` 仍只放行 push main）。
 - 一次验收的实测路径：`tmp/clean-clone-2` 是 `git clone` 到 `77d8c1a` 的干净副本，按 README 跑完 `npm ci` → `npx quartz plugin install` → `npm run check:entries` → `npx quartz build`，`public/` 里有 `这座花园是什么.html` 与 `404.html`。
