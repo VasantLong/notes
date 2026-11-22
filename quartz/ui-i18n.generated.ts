@@ -41,13 +41,20 @@ export const uiI18n: UiI18n = {
       en: "Transclude of $1",
     },
     {
-      re: "^查看更多(\\d+)篇笔记 →$",
-      en: "See $1 more →",
+      re: "^总共有(\\d+)个标签。$",
+      en: "Found $1 total tags.",
     },
     {
-      re: "^此标签下有(\\d+)条笔记。$",
-      one: "$1 item with this tag.",
-      other: "$1 items with this tag.",
+      re: "^显示前(\\d+)个标签。$",
+      en: "Showing first $1 tags.",
+    },
+    {
+      re: "^最近的(\\d+)条笔记$",
+      en: "Last $1 notes",
+    },
+    {
+      re: "^查看更多(\\d+)篇笔记 →$",
+      en: "See $1 more →",
     },
     {
       re: "^此文件夹下有(\\d+)条笔记。$",
@@ -55,16 +62,9 @@ export const uiI18n: UiI18n = {
       other: "$1 items under this folder.",
     },
     {
-      re: "^显示前(\\d+)个标签。$",
-      en: "Showing first $1 tags.",
-    },
-    {
-      re: "^总共有(\\d+)个标签。$",
-      en: "Found $1 total tags.",
-    },
-    {
-      re: "^最近的(\\d+)条笔记$",
-      en: "Last $1 notes",
+      re: "^此标签下有(\\d+)条笔记。$",
+      one: "$1 item with this tag.",
+      other: "$1 items with this tag.",
     },
   ],
 }

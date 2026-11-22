@@ -34,6 +34,7 @@ npm run check         # tsc + prettier + 字典漂移校验
 - 键是**中文原文**，值是英文；生成的插值模式（如 `^(\d+)分钟阅读$` → `$1 min read`）负责运行时填充。
 - 新增一条界面文案的顺序：先看它是否已在 `quartz/i18n/locales/{zh-CN,en-US}.ts`；不在（多是插件自带词表）就写进 `overlay.ts`。
 - 生成器会跳过 `components.callout.*`（callout 标题属于正文语气），且遇到同键不同译文只报警告、保留既有值。
+- 排序必须按**码位**（`a < b`），不要用 `localeCompare`：ICU 的排序规则随 Node/locale 变化，本机生成的顺序与 GitHub Actions 上重算的顺序会不同，`test/ui-language.test.ts` 的逐字比对断言会因此在 CI 上红、本地绿。
 
 ## 边界：什么不翻
 

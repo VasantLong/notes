@@ -140,7 +140,9 @@ export function buildUiI18n(): { dict: UiI18n; conflicts: string[] } {
   return {
     dict: {
       strings: sortedStrings,
-      patterns: [...patterns.values()].sort((a, b) => a.re.localeCompare(b.re)),
+      // 不要用 localeCompare：ICU 排序规则随 Node/locale 变化，CI（Linux + 不同 ICU）会排出
+      // 与本地不同的顺序，deepStrictEqual 断言随之失败。按码位比较才是跨机稳定的。
+      patterns: [...patterns.values()].sort((a, b) => (a.re < b.re ? -1 : a.re > b.re ? 1 : 0)),
     },
     conflicts,
   }
