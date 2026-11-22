@@ -1,7 +1,11 @@
 import { PageFrame, PageFrameProps } from "./types"
 import HeaderConstructor from "../Header"
+import UiLang from "../UiLang"
+import SiteFooter from "../SiteFooter"
 
 const Header = HeaderConstructor()
+const UiLangSwitch = UiLang()
+const Footer = SiteFooter()
 
 /**
  * The default page frame — three-column layout with left sidebar, center
@@ -19,7 +23,6 @@ export const DefaultFrame: PageFrame = {
     afterBody,
     left,
     right,
-    footer,
     sidebars,
   }: PageFrameProps) {
     return (
@@ -32,9 +35,10 @@ export const DefaultFrame: PageFrame = {
         <div class="center">
           <div class="page-header">
             <Header {...componentData}>
-              {header.map((HeaderComponent) => (
-                <HeaderComponent {...componentData} />
-              ))}
+              {[
+                ...header.map((HeaderComponent) => <HeaderComponent {...componentData} />),
+                <UiLangSwitch {...componentData} />,
+              ]}
             </Header>
             <div class="popover-hint">
               {beforeBody.map((BodyComponent) => (
@@ -55,9 +59,7 @@ export const DefaultFrame: PageFrame = {
             <BodyComponent {...componentData} />
           ))}
         </div>
-        {footer.map((FooterComponent) => (
-          <FooterComponent {...componentData} />
-        ))}
+        <Footer {...componentData} />
       </>
     )
   },

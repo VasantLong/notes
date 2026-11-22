@@ -1,3 +1,13 @@
+/**
+ * 组件内联脚本：esbuild 的 inline-script-loader 把 *.inline.ts 整个文件编译成一个字符串作为
+ * 模块默认导出，源码自身没有 export。上游各处用 // @ts-ignore 绕过导入检查，这里给出正式声明，
+ * 让 import uiLangScript from "./scripts/ui-lang.inline" 得到 string 类型。
+ */
+declare module "*.inline" {
+  const source: string
+  export default source
+}
+
 export declare global {
   interface Document {
     addEventListener<K extends keyof CustomEventMap>(

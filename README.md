@@ -29,6 +29,7 @@ Working in this repository as an agent? Read [AGENTS.md](AGENTS.md) first.
 | Vocabulary: entry, promotion, publish states       | [CONTEXT.md](CONTEXT.md)                                     |
 | Writing and promoting content                      | [docs/content.md](docs/content.md)                           |
 | Local setup, tests, CI, deploy, domain, rollback   | [docs/deploy.md](docs/deploy.md)                             |
+| UI language switch (中/EN) and site footer         | [docs/ui-and-footer.md](docs/ui-and-footer.md)               |
 | Known limitations and hard constraints             | [DEGRADATIONS.md](DEGRADATIONS.md)                           |
 | Site spec: 39 stories, plugin contract, test seams | [.scratch/garden-site/spec.md](.scratch/garden-site/spec.md) |
 | Implementation tickets                             | [.scratch/garden-site/issues/](.scratch/garden-site/issues)  |

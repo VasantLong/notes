@@ -210,12 +210,12 @@ describe("导航与阅读面：组件生成的站内链接", () => {
     const heading = text.indexOf("反向链接")
     assert.ok(heading > 0, "页面应显示「反向链接」标题")
     assert.ok(text.indexOf("见 根条目") < heading, "反链应排在正文之后")
-    const footer = text.indexOf("Created with Quartz")
+    const footer = text.indexOf("除特别注明外")
     assert.ok(footer > heading, "反链应排在页脚之前")
 
     const section = deepHtml.slice(
       deepHtml.indexOf("反向链接"),
-      deepHtml.indexOf("Created with Quartz"),
+      deepHtml.indexOf('class="site-footer"'),
     )
     const sources = anchors(section).map((link) => resolveHref(files, deepPage, link.href))
     for (const source of ["别处/中层.html", "根条目.html"]) {

@@ -29,6 +29,7 @@
 | 词汇表：条目、晋升、发布态              | [CONTEXT.md](CONTEXT.md)                                     |
 | 写作与晋升流程                          | [docs/content.md](docs/content.md)                           |
 | 本地搭建、测试、CI、部署、域名、回滚    | [docs/deploy.md](docs/deploy.md)                             |
+| 界面中英切换与站脚                      | [docs/ui-and-footer.md](docs/ui-and-footer.md)               |
 | 已知降级与硬约束                        | [DEGRADATIONS.md](DEGRADATIONS.md)                           |
 | 站点规格：39 条故事、插件契约、测试接缝 | [.scratch/garden-site/spec.md](.scratch/garden-site/spec.md) |
 | 实现票据                                | [.scratch/garden-site/issues/](.scratch/garden-site/issues)  |

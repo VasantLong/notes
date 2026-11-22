@@ -87,7 +87,6 @@ describe("站点骨架：配置契约", () => {
       "created-modified-date",
       "favicon",
       "cname",
-      "footer",
       "spacer",
       "unlisted-pages",
       "tag-list",
@@ -108,6 +107,13 @@ describe("站点骨架：配置契约", () => {
     for (const name of mustBeOff) {
       assert.equal(state.get("@quartz-community/" + name), false, `${name} 应显式关闭`)
     }
+    // 页脚改由本地 quartz/components/SiteFooter.tsx 在 frame 里渲染（标准两行 + 双语），
+    // 插件的 “Created with Quartz” 硬编码拼不出来，故整条从配置里摘掉。
+    assert.equal(
+      state.get("@quartz-community/footer"),
+      undefined,
+      "footer 插件应已移除（页脚由 SiteFooter.tsx 渲染）",
+    )
   })
 
   test("插件版本被锁死：精确版本 + 锁文件条目", async () => {

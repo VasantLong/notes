@@ -129,7 +129,7 @@ describe("首页（fixture 花园库）", () => {
   test("首页不出现在自己的反链里，反链只列真正引用它的页面", () => {
     const html = artifacts.get("index.html")!
     const start = html.indexOf("反向链接")
-    const end = html.indexOf("Created with Quartz")
+    const end = html.indexOf('class="site-footer"')
     assert.ok(start > 0, "首页没有反向链接区")
     const section = html.slice(start, end > start ? end : undefined)
     const sources = anchors(section)

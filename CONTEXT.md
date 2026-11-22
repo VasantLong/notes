@@ -53,3 +53,13 @@ _Avoid_: 校验规则, lint 规则
 **指纹/校验器 (Validator)**:
 构建前检查条目契约的纯函数：输入前置字段与 slug，输出违规列表。
 _Avoid_: 检查脚本, lint 工具
+
+## 界面
+
+**界面语言层 (UI Language Layer)**:
+同一份 URL 上，只把站点 chrome（侧栏、搜索、页脚）换语言的客户端层；选择记在 `localStorage.uiLang`，默认中文。笔记正文与标题不参与。
+_Avoid_: 双语站点, 多语言版本, i18n 路由
+
+**站脚 (Site Footer)**:
+页脚的标准两行：版权行 + 站点链接，第二行双语许可声明。由 `quartz/components/SiteFooter.tsx` 在 frame 里渲染，不用 `@quartz-community/footer` 插件。
+_Avoid_: footer 插件, 版权栏
