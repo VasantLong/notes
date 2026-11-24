@@ -5,8 +5,12 @@
 ## 站点
 
 **数字花园 (Digital Garden)**:
-按概念组织的笔记站，没有时间流；本仓产出把它部署在 `notes.vasantlong.de5.net`。英文 digital garden 是这个形态的通行叫法（Quartz 自身就以此定位）。
+按概念组织的笔记站，没有时间流；本仓产出把它部署在 `notes.vasantlong.de5.net`。英文 digital garden 是这个形态的通行叫法（Quartz 的自我介绍就是 "publish your digital garden and notes as a website"）。
 _Avoid_: 博客, 花园站
+
+**Notes**:
+站点对外名：`pageTitle`、博客导航、页面标题一律写 `Notes`（大写）；标签名与域名用小写 `notes`。「花园」只在解释这个形态时作比喻，不作站名、菜单名或标签名；比喻的出处写在首页与 `content/这座花园是什么.md`。
+_Avoid_: 花园站, 花园
 
 ## 内容单位
 
