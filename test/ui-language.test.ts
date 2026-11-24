@@ -61,7 +61,7 @@ describe("界面语言层与站脚：产物契约", () => {
 
     const values = Object.values(uiI18n.strings)
     assert.ok(values.includes("Table of Contents"), "缺右栏目录译文")
-    assert.ok(values.includes("Garden"), "缺左栏花园译文")
+    // 站点标题已是 notes（英文原文），左栏不需要译文；改名前的「花园 → Garden」已删
     assert.ok(values.includes("Search for something..."), "缺搜索框占位符译文")
     assert.ok(
       uiI18n.patterns.some(

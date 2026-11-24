@@ -4,7 +4,7 @@ title: 内容许可
 description: 笔记内容按 CC BY 4.0 许可，站点代码按 MIT 许可。
 date: 2026-11-21
 tags:
-  - 花园
+  - notes
 ---
 
 这里的**笔记内容**（`content/` 下的文字）按 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.zh-hans) 许可：转载、改编、商用都可以，前提是署名——注明作者 VasantLong，并链回本条目或原来的页面。

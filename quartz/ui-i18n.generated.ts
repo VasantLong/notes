@@ -26,7 +26,6 @@ export const uiI18n: UiI18n = {
     "没有结果。": "No results.",
     目录: "Table of Contents",
     "私有笔记或笔记不存在。": "Either this page is private or doesn't exist.",
-    花园: "Garden",
     "请尝试其他搜索词。": "Try another search term?",
     返回首页: "Return to Homepage",
     阅读模式: "Reader mode",
