@@ -35,7 +35,8 @@ npx quartz build --serve  # 本地预览 :8080
 10. **探索树默认展开是本站补丁**：上游 explorer 的 `folderDefaultState` 只写 `data-collapsed` 属性、客户端不读；不要以为改配置就能生效。
 11. **界面字典是生成物**：`quartz/ui-i18n.generated.ts` 由 `npm run gen:ui-dict` 从 `quartz/i18n/locales` + `quartz/ui-i18n/overlay.ts` 生成，手改会被 `npm run check` 的 `--check` 抓住。插件自带词表里有、核心表里没有的串写进 `overlay.ts`。机制与排查见 `docs/ui-and-footer.md`。
 12. **页脚只有一处**：`SiteFooter.tsx` 在 frame 里渲染；`@quartz-community/footer` 已从配置摘掉，别再加回来（会重复渲染）。frame 里必须 `const Footer = SiteFooter()` 先实例化，直接把构造函数当组件写会静默不渲染。
-13. **`static/contentIndex.json` 有 10 分钟缓存**：部署后导航（探索/图谱/搜索）可能仍是旧的，先硬刷新再判断是不是构建问题。
+13. **站名与标签**：`pageTitle`、页面标题、博客导航一律大写 `Notes`，标签名与域名小写 `notes`；「花园」只作比喻（digital garden 的形态说明），不作站名、菜单名或标签名——比喻出处写在首页与 `content/这座花园是什么.md`。
+14. **`static/contentIndex.json` 有 10 分钟缓存**：部署后导航（探索/图谱/搜索）可能仍是旧的，先硬刷新再判断是不是构建问题。
 
 ## 提交
 

@@ -1,4 +1,4 @@
-# 花园站配置（契约见 .scratch/garden-site/spec.md 的"站点配置（契约）"表）
+# Notes 站配置（契约见 .scratch/garden-site/spec.md 的"站点配置（契约）"表）
 configuration:
   pageTitle: Notes
   pageTitleSuffix: ""
